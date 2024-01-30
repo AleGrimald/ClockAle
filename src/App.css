@@ -73,9 +73,9 @@ button{
 
 /*---------------------------------------------*/
 .timer{
-  width: 20%;
+  width: 25%;
   height: 30%;
-  padding: 1rem;
+  padding: 1rem .5rem;
   border-radius: 15px;
   display: flex;
   flex-flow: column nowrap;
@@ -86,6 +86,8 @@ button{
   box-shadow: 3px 3px 15px 1px black;
 }
 #time-left{
+  width: 100%;
+  text-align: center;
   font-size: 65px;
   font-weight: 600;
   color: rgba(43, 42, 42);

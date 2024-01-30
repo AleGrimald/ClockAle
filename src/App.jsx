@@ -1,15 +1,49 @@
 import './App.css';
-import {useState} from 'react';
+import {useState, useRef, useEffect} from 'react';
 
 function App() {
+  const [minuto, setMinuto] = useState(0);
+  const [segundo, setSegundo] = useState(10);
   const [descanso, setDescanso] = useState(5);
   const [session, setSession] = useState(25);
-  const [minutos, setMinuto] = useState(25);
-  const [segundos, setSegundo] = useState(`0${0}`);
 
-  let min=minutos;
-  let seg= segundos;
-  var iMin = undefined;
+  let seg = segundo;
+  let minut = minuto;
+  const currentTimer = useRef();
+  
+  useEffect(() => {
+    return () => clearInterval(currentTimer.current);
+  }, []);
+
+
+  const startTimer = () => {
+    currentTimer.current = setInterval(() => {
+      sessionTimer();
+    }, 1000);
+  };
+
+  const sessionTimer=()=>{
+    if(minut>0 & seg===0){
+      seg=59;
+      setSegundo(seg);
+      setMinuto(min=> min - 1);
+    }else if(seg>0){
+      seg-=1;
+      setSegundo(seg);
+    }else if(minut===0 && seg===0){
+      clearInterval(currentTimer.current);
+    }
+  }
+
+  const stopTimer = () => {
+    clearInterval(currentTimer.current);
+  };
+  const resetTimer = () => {
+      clearInterval(currentTimer.current);
+      setMinuto(25);
+      setSegundo(0);
+  };
+
 
   const incrementSession=()=>{
     if(session<60){
@@ -36,46 +70,6 @@ function App() {
       setDescanso(descanso-1);
     }
   };
-
-  const resetAll=()=>{
-    setSession(25);
-    setMinuto(25);
-    setSegundo(`0${seg}`);
-    setDescanso(5);
-  };
-
-  const minTimer=()=>{
-    if(min>0){
-      min-=1;
-      setMinuto(min);
-      segTimer();
-    }
-  };
-
-  const segTimer=()=>{
-    seg=60;
-    iMin=setInterval(() => {
-      seg-=1;
-      if(seg>=10){
-        setSegundo(seg);
-      }else{
-        setSegundo(`0${seg}`);
-      }
-      
-      if(min===0 && seg ===0){
-        clearInterval(iMin);
-      }else if(seg===0){
-        setSegundo(`0${seg}`);
-        clearInterval(iMin);
-        minTimer();
-      }
-    }, 1000);
-  };
-
-  const pauseTimer=()=>{
-    clearInterval(iMin);
-  };
-
 
 
   return (
@@ -105,13 +99,13 @@ function App() {
       
       <div className='timer'>
         <div id='timer-label'>Session</div>
-        <div id='time-left' dangerouslySetInnerHTML={{__html:`${minutos} : ${segundos}`}}></div>
+        <div id='time-left' dangerouslySetInnerHTML={{__html:`${minuto} : ${segundo}`}}></div>
       </div>
 
       <div className='timer-control'>
-        <button onClick={minTimer} className='botones_control' id='start_stop'>Start</button>
-        <button onClick={pauseTimer} className='botones_control' id='pause'>Pause</button>
-        <button onClick={resetAll} className='botones_control' id='reset'>Reset</button>
+        <button onClick={startTimer} className='botones_control' id='pause'>Start</button>
+        <button onClick={stopTimer} className='botones_control' id='start_stop'>Pausa</button>
+        <button onClick={resetTimer} className='botones_control' id='start_stop'>Reset</button>
       </div>
     </div>
   );
